@@ -43,15 +43,16 @@ $request = new \Http\HttpRequest($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
 $response = new \Http\HttpResponse;
 
 $routeDefinitionCallback = function (\FastRoute\RouteCollector $r) {
-    $routes = include('Routes.php');
-    foreach ($routes as $route) {
-        //$r->addRoute($route[0], $route[1], $route[2]);
+    $r->addRoute('GET', '/signup', 'UserController@signup');
+    $r->addRoute('POST', '/signup', 'UserController@signup');
+    $r->addRoute('GET', '/login', 'UserController@login');
+    $r->addRoute('POST', '/login', 'UserController@login');
+    if (\QD\Models\User::isLoggedIn()) {
+        $routes = include('Routes.php');
+        foreach ($routes as $route) {
+            $r->addRoute($route[0], $route[1], $route[2]);
+        }
     }
-
-    $r->addGroup("/", function ($r) {
-        $r->addRoute("GET", "", "PageController@index");
-        $r->addRoute("GET", "/pip", "PageController@pip");
-    });
 };
 
 $dispatcher = \FastRoute\simpleDispatcher($routeDefinitionCallback);
@@ -76,6 +77,10 @@ switch ($routeInfo[0]) {
         break;
 }
 
+if (!(\QD\Models\User::isLoggedIn()) && ($request->getPath() !== "/login") && ($request->getPath() !== "/signup")) {
+
+    $response->redirect("/login");
+}
 
 foreach ($response->getHeaders() as $header) {
     header($header, false);

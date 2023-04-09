@@ -35,7 +35,12 @@ class ViewController {
             $pageName = is_array($page) ? $page[0] : $page;
             $vars = is_array($page) && count($page) > 1 ? $page[1] : [];
 
-            $response->setContent(file_get_contents(Template::view($pageName, $vars)));
+            ob_start();
+            include(Template::view($pageName, $vars));
+            $output = ob_get_contents();
+            ob_end_clean();
+
+            $response->setContent($output);
         }
     }
 

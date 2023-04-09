@@ -1,3 +1,4 @@
+window.$ = jQuery;
 $(function () {
     $(".slider-wrapper").slick({
         infinite: true,

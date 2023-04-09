@@ -2,16 +2,25 @@
     <div class="container">
         <div class="d-flex flex-col flex-lg-row justify-content-between">
             <div class="logo">
-                <img src="assets/logo.png" alt="logo" style="max-height: 80px">
+                <img src="assets/logo-q.png" alt="logo" style="max-height: 80px">
             </div>
             <div class="d-flex flex-col justify-content-center">
                 <nav class="navbar navbar-dark">
                     <ul class="navbar-nav d-flex flex-row">
-                        <li class="nav-item mx-2"><a class="nav-link" href="/">Главная</a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="/about">О нас</a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="/invates">Инвейты</a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="/marks">Правки</a></li>
-                        <li class="nav-item mx-2"><a class="nav-link" href="/dig">Копать</a></li>
+
+                        {% if(isset($_COOKIE["uid"])): %}
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#">
+                                {% print_r(\QD\Models\User::find($_COOKIE["uid"])->email); %}
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="/logout">log out</a></li>
+                        {% else: %}
+
+                        <li class="nav-item mx-2"><a class="nav-link" href="/signup">signup</a></li>
+                        <li class="nav-item mx-2"><a class="nav-link" href="/login">login</a></li>
+
+                        {% endif; %}
                     </ul>
                 </nav>
             </div>

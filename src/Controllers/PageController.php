@@ -8,6 +8,8 @@
 
 namespace QD\Controllers;
 
+use \QD\Models\User;
+
 /**
  * Description of PageController
  *
@@ -22,15 +24,6 @@ class PageController {
     }
 
     public function index() {
-
-        $user = new \QD\Models\User();
-        $user->name = "test";
-        $user->email = "test@test.tes";
-        $user->pass = "test";
-        $user->save();
-        echo "<pre>";
-        die(print_r($user));
-
         $id = null;
         if (isset($this->vars["id"])) {
             $id = $this->vars["id"];
@@ -57,10 +50,6 @@ class PageController {
 
     public function digPage() {
         return "digPage.html";
-    }
-
-    public function pip() {
-        echo "pip";
     }
 
 }

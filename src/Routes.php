@@ -17,4 +17,6 @@ return [
     ['GET', '/marks', 'PageController@marksPage'],
     ['GET', '/dig', 'PageController@digPage'],
     ['POST', '/order-form', 'FormController@index'],
+    ['GET', '/pip', 'PageController@pip'],
+    ['GET', '/logout', 'UserController@logout']
 ];
