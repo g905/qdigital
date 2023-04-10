@@ -43,9 +43,10 @@ class PageController {
 
     public function library() {
         $books = Book::join("users_books", "books.id", "users_books.book_id")
+                ->where(["books.deleted" => false])
                 ->where(["users_books.user_id" => User::current()->id])
-                ->where(["deleted" => false])
-                ->get();
+                ->get(["books.*"]);
+
         return ["library.html", ["books" => $books]];
     }
 
@@ -53,7 +54,7 @@ class PageController {
         $books = Book::join("users_favs", "users_favs.book_id", "books.uid")
                 ->where(["users_favs.user_id" => User::current()->id])
                 ->where(["books.deleted" => false])
-                ->get();
+                ->get("books.*");
         return ["library.html", ["books" => $books]];
     }
 
