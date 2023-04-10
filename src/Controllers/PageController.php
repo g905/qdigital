@@ -9,6 +9,7 @@
 namespace QD\Controllers;
 
 use \QD\Models\User;
+use \QD\Models\Book;
 
 /**
  * Description of PageController
@@ -40,16 +41,27 @@ class PageController {
         return "aboutPage.html";
     }
 
-    public function invatesPage() {
-        return "invatesPage.html";
+    public function library() {
+        $books = Book::where(["deleted" => false])->get();
+        return ["library.html", ["books" => $books]];
     }
 
-    public function marksPage() {
-        return "marksPage.html";
+    public function favorites() {
+        $books = Book::where(["favorite" => true])->where(["deleted" => false])->get();
+        return ["library.html", ["books" => $books]];
     }
 
-    public function digPage() {
-        return "digPage.html";
+    public function book() {
+        $id = $this->vars["id"];
+        $book = Book::where(["deleted" => false])->where(["id" => $id])->first();
+
+        if (!$book) {
+            $response = new \Http\HttpResponse();
+            $response->setStatusCode(404);
+            return "404.html";
+        }
+
+        return ["book.html", ["book" => $book]];
     }
 
 }

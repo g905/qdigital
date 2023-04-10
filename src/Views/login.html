@@ -3,6 +3,7 @@
 {% block title %}Log in{% endblock %}
 
 {% block content %}
+
 <div class="container">
     <h1>Login</h1>
     <p>This is a login page</p>
@@ -44,6 +45,7 @@
             success: (data) => {
                 if (data.length > 0) {
                     console.log(data);
+                    $(".errors").append(data).fadeIn();
                     return false;
                 }
                 location.href = "/";
@@ -52,10 +54,11 @@
                 console.log(err);
             },
             beforeSend: function () {
-                $('#loader').show();
+                $(".errors").html("").fadeOut();
+                $('#loader').fadeIn();
             },
             complete: function () {
-                $('#loader').hide();
+                $('#loader').fadeOut();
             }
         });
     });

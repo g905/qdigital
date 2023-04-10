@@ -1,3 +1,5 @@
+php 7 not 8
+
 fix in /srv/http/projects/qdigital.lc/vendor/robmorgan/phinx/src/Phinx/Util/Util.php line 111 - implode arguments
 
 phinx migrations

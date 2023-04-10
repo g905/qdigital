@@ -55,7 +55,7 @@ class UserController {
         }
         unset($_COOKIE["uid"]);
         setcookie('uid', null, -1, '/');
-        return "index.html";
+        return "login.html";
     }
 
 }

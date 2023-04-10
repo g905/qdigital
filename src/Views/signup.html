@@ -24,6 +24,10 @@
                 <label for="pass">pass</label>
                 <input type="password" name="pass" id="pass" placeholder="pass">
             </div>
+            <div class="form-group mb-3">
+                <label for="confirm">confirm</label>
+                <input type="password" name="confirm" id="confirm" placeholder="confirm">
+            </div>
             <div class="form-group">
                 <button class="btn btn-warning" type="submit">signup</button>
             </div>
@@ -47,6 +51,14 @@
             success: (data) => {
                 if (data.length > 0) {
                     console.log(data);
+                    let ul = $("<ul>");
+                    $(data).each((idx, el) => {
+                        let li = $("<li>");
+                        li.append(el.msg);
+                        ul.append(li);
+                    });
+                    $(".errors").append(ul);
+                    $(".errors").fadeIn();
                     return false;
                 }
                 location.href = "/login";
@@ -55,10 +67,11 @@
                 console.log(err);
             },
             beforeSend: function () {
-                $('#loader').show();
+                $(".errors").fadeOut().html("");
+                $('#loader').fadeIn();
             },
             complete: function () {
-                $('#loader').hide();
+                $('#loader').fadeOut();
             }
         });
     });

@@ -11,13 +11,20 @@ class User extends Model {
     public function validate($data) {
         $this->errors = [];
         if (!(isset($data["name"])) || trim($data["name"]) === "") {
-            $this->errors[] = ["msg" => "missing"];
+            $this->errors[] = ["msg" => "name missing"];
         }
         if (!(isset($data["email"])) || trim($data["email"]) === "") {
-            $this->errors[] = ["msg" => "missing"];
+            $this->errors[] = ["msg" => "email missing"];
         }
         if (!(isset($data["pass"])) || trim($data["pass"]) === "") {
-            $this->errors[] = ["msg" => "missing"];
+            $this->errors[] = ["msg" => "pass missing"];
+        }
+        if (!(isset($data["confirm"])) || trim($data["confirm"]) === "") {
+            $this->errors[] = ["msg" => "confirm missing"];
+        }
+
+        if ((isset($data["confirm"]) && isset($data["pass"]) && $data["pass"] !== $data["confirm"])) {
+            $this->errors[] = ["msg" => "confirm does not match"];
         }
         if ($this->getByEmail($data["email"])) {
             $this->errors[] = ["msg" => "email already exists"];
@@ -43,7 +50,10 @@ class User extends Model {
     }
 
     public static function current() {
-        return self::find($_COOKIE["uid"]);
+        if (isset($_COOKIE["uid"])) {
+            return self::find($_COOKIE["uid"]);
+        };
+        return false;
     }
 
 }

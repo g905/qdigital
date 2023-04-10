@@ -9,14 +9,16 @@
     <body>
         {% include header.html %}
         <main>
+            <div class="container errors bg-danger text-white p-2" style="display: none;"></div>
             {%yield content%}
         </main>
         {% include footer.html %}
         {% include loader.html %}
         <script src="/assets/lib/jquery/jquery-3.6.1.min.js"></script>
+        <script src="/assets/lib/jquery.ba-throttle-debounce.min.js"></script>
         <script src="/assets/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="/assets/lib/slick/slick.min.js"></script>
-        <script src="assets/js/app.js"></script>
+        <script src="/assets/js/app.js"></script>
 
         {%yield scripts%}
 

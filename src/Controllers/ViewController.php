@@ -34,7 +34,6 @@ class ViewController {
 
             $pageName = is_array($page) ? $page[0] : $page;
             $vars = is_array($page) && count($page) > 1 ? $page[1] : [];
-
             ob_start();
             include(Template::view($pageName, $vars));
             $output = ob_get_contents();

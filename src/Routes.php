@@ -13,10 +13,12 @@ return [
     ['GET', '/{id:\d+}', 'PageController@index'],
     ['GET', '/test', 'PageController@testPage'],
     ['GET', '/about', 'PageController@aboutPage'],
-    ['GET', '/invates', 'PageController@invatesPage'],
-    ['GET', '/marks', 'PageController@marksPage'],
-    ['GET', '/dig', 'PageController@digPage'],
     ['POST', '/order-form', 'FormController@index'],
-    ['GET', '/pip', 'PageController@pip'],
-    ['GET', '/logout', 'UserController@logout']
+    ['GET', '/logout', 'UserController@logout'],
+    ['POST', '/add-book', 'BookController@addBook'],
+    ['POST', '/del-book', 'BookController@removeBook'],
+    ['POST', '/fav-book', 'BookController@toggleFavorite'],
+    ['GET', '/library', 'PageController@library'],
+    ['GET', '/favorites', 'PageController@favorites'],
+    ['GET', '/book/{id:\d+}', 'PageController@book'],
 ];

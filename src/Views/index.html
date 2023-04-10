@@ -5,11 +5,8 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <div class="heading"><h4>index</h4></div>
-        </div>
-        <div class="col-12">
-            wewej
-            <h4>{% $e = 0; echo($e ? "true" : "false") %}</h4>
+            <h4>Привет, {{ \QD\Models\User::current()->name; }}</h4>
+            <p>Можешь поискать книги.</p>
         </div>
     </div>
 </div>

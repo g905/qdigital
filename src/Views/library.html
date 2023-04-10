@@ -1,0 +1,124 @@
+{% extends layout.html %}
+
+{% block title %}QDigital Test task{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h4>Список сохраненных книг</h4>
+            {% $books =  $vars["books"]; %}
+            <ul class="books-list list-group">
+                {% foreach($books as $book): %}
+                {% $fav = $book->favorite ? "favorite" : "" %}
+                <li class="d-flex flex-nowrap justify-content-between list-group-item {{ $fav }} book" data-book-uid="{{ $book->uid }}">
+                    <div class="title">{{ $book->title }}</div>
+                    <div class="controls d-flex flex-nowrap justify-content-between">
+                        <button class="btn btn-success fav">F</button>
+                        <button class="btn btn-danger mx-2 del">D</button>
+                        <a href="/book/{{ $book->id }}" class="btn btn-info info">I</a>
+                    </div>
+                </li>
+                {% endforeach; %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    let del = (uid) => {
+        $.ajax({
+            url: "/del-book",
+            type: "post",
+            data: {uid: uid},
+            success: (data) => {
+                console.log(data);
+                $("[data-book-uid=" + uid + "]").remove();
+            },
+            error: (err) => {
+                console.log(err);
+            },
+            beforeSend: function () {
+                $('#loader').fadeIn();
+            },
+            complete: function () {
+                $('#loader').fadeOut();
+            }
+        });
+    };
+
+    let fav = (uid) => {
+        $.ajax({
+            url: "/fav-book",
+            type: "post",
+            data: {uid: uid},
+            success: (data) => {
+                console.log(data);
+                $("[data-book-uid=" + uid + "]").toggleClass("favorite");
+            },
+            error: (err) => {
+                console.log(err);
+            },
+            beforeSend: function () {
+                $('#loader').fadeIn();
+            },
+            complete: function () {
+                $('#loader').fadeOut();
+            }
+        });
+    };
+
+    $(".book").each((idx, el) => {
+        let uid = $(el).data("book-uid");
+
+        $(el).find(".del").on("click", () => {
+            if (confirm("Да?")) {
+                del(uid);
+            }
+        });
+
+        $(el).find(".fav").on("click", () => {
+            fav(uid);
+        });
+    });
+
+
+
+
+
+
+
+</script>
+
+{% endblock %}
+
+<style>
+    .books-list {
+        max-width: 600px;
+    }
+
+    .controls .btn {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .books-list .list-group-item.favorite:before {
+        content: "";
+        width: 10px;
+        height: 100%;
+        background: #198754;
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        border-top-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+    }
+</style>
+

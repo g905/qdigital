@@ -1,0 +1,169 @@
+<div class="menu bg-warning m-0 mt-2">
+    <div class="container">
+        <div class="d-flex flex-col justify-content-start">
+            <nav class="navbar navbar-dark py-2">
+                <ul class="navbar-nav d-flex flex-row">
+
+                    <li class="nav-item">
+                        <form class="align-items-center search-form">
+                            <input type="text" class="form-control" name="search" id="search" placeholder="Поиск">
+                            <div class="results-container">
+
+                            </div>
+                        </form>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="/library">
+                            Библиотека
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="/favorites">
+                            Избранное
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    let searchInput = $("#search");
+    let books;
+
+    let booksList = (books) => {
+        let ul = $("<ol class='list-group list-group-numbered'>");
+        $(books).each(function (idx, el) {
+            let li = $("<li class='list-group-item d-flex flex-row flex-nowrap justify-content-between pb-1'>").append($("<div class='px-3'>").append(el.volumeInfo.title));
+            li.append($("<div class='add_btn'>").append($("<button type='button' class='btn btn-success add-btn' data-book-uid='" + el.id + "' onclick='addBook(this)'>").append("add")));
+            li.appendTo(ul);
+            //console.log(el);
+        });
+        return $("<div>").append(ul);
+    }
+
+    let searchBooks = (data) => {
+        let url = "https://www.googleapis.com/books/v1/volumes?q=" + data.val;
+
+
+        $.ajax({
+            url: url,
+            type: "get",
+            success: (data) => {
+                $(".results-container").html("");
+                if (data.items) {
+                    books = data.items.slice(0, 10);
+                    console.log(books);
+                    $(".results-container").append(booksList(books));
+                } else {
+                    $(".results-container").append($("<div>").text("Ничего не найдено"));
+                }
+            },
+            error: (err) => {
+                console.log(err);
+            },
+            beforeSend: function () {
+                $(".results-container").fadeOut();
+                $('#loader').fadeIn();
+            },
+            complete: function () {
+                $(".results-container").fadeIn();
+                $('#loader').fadeOut();
+            }
+        });
+
+    };
+
+    $(searchInput).keyup($.debounce(550, function (e) {
+        if ($(this).val().trim() === "") {
+            return false;
+        }
+        let toSend = {
+            val: $(this).val()
+        };
+        searchBooks(toSend);
+    }));
+
+    $(document).on('click', function (e) {
+        var el = '.results-container';
+        if ($(e.target).closest(el).length)
+            return;
+        $(".results-container").fadeOut();
+    });
+
+    function addBook(e) {
+        if (!confirm("Да?"))
+            return false;
+        let uid = $(e).data("book-uid");
+        let book = {};
+        $(books).each((idx, el) => {
+            if (el.id === uid) {
+                book = {
+                    uid: uid,
+                    title: el.volumeInfo.title,
+                    authors: el.volumeInfo.authors,
+                    description: el.volumeInfo.description
+                };
+            }
+        });
+
+        $.ajax({
+            url: "/add-book",
+            type: "post",
+            data: book,
+            success: (data) => {
+                console.log(data);
+            },
+            error: (err) => {
+                console.log(err);
+            },
+            beforeSend: function () {
+                $('#loader').fadeIn();
+            },
+            complete: function () {
+                $('#loader').fadeOut();
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}
+
+
+
+
+
+<style>
+    .menu .navbar .nav-item {
+        display: flex;
+        justify-content: center;
+    }
+    .menu .navbar .nav-item:not(.nav-item:first-child):hover {
+        background: rgba(0,0,0,.1);
+    }
+
+    .menu .navbar .nav-item a {
+        color: #333;
+    }
+
+    #search {
+        width: 300px;
+    }
+
+    .search-form {
+        position: relative;
+    }
+
+    .results-container {
+        background: #fff;
+        min-width: 500px;
+        min-height: 100px;
+        position: absolute;
+        border: 1px solid #666;
+        margin-top: .2rem;
+        display: none;
+    }
+</style>
