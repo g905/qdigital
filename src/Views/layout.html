@@ -22,5 +22,110 @@
 
         {%yield scripts%}
 
+        {% if(\QD\Models\User::isLoggedIn()): %}
+        <script>
+            let searchInput = $("#search");
+            let books;
+
+            let booksList = (books) => {
+                let ul = $("<ol class='list-group list-group-numbered'>");
+                $(books).each(function (idx, el) {
+                    let li = $("<li class='list-group-item d-flex flex-row flex-nowrap justify-content-between pb-1'>").append($("<div class='px-3'>").append(el.volumeInfo.title));
+                    li.append($("<div class='add_btn'>").append($("<button type='button' class='btn btn-success add-btn' data-book-uid='" + el.id + "' onclick='addBook(this)'>").append("add")));
+                    li.appendTo(ul);
+                    //console.log(el);
+                });
+                return $("<div>").append(ul);
+            }
+
+            let searchBooks = (data) => {
+                let url = "https://www.googleapis.com/books/v1/volumes?q=" + data.val;
+
+
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    success: (data) => {
+                        $(".results-container").html("");
+                        if (data.items) {
+                            books = data.items.slice(0, 10);
+                            console.log(books);
+                            $(".results-container").append(booksList(books));
+                        } else {
+                            $(".results-container").append($("<div>").text("Ничего не найдено"));
+                        }
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    },
+                    beforeSend: function () {
+                        $(".results-container").fadeOut();
+                        $('#loader').fadeIn();
+                    },
+                    complete: function () {
+                        $(".results-container").fadeIn();
+                        $('#loader').fadeOut();
+                    }
+                });
+
+            };
+
+            $(searchInput).keyup($.debounce(550, function (e) {
+                console.log("Test");
+                if ($(this).val().trim() === "") {
+                    return false;
+                }
+                let toSend = {
+                    val: $(this).val()
+                };
+                searchBooks(toSend);
+            }));
+
+            $(document).on('click', function (e) {
+                var el = '.results-container';
+                if ($(e.target).closest(el).length)
+                    return;
+                $(".results-container").fadeOut();
+            });
+
+            function addBook(e) {
+                if (!confirm("Да?"))
+                    return false;
+                let uid = $(e).data("book-uid");
+                let book = {};
+                $(books).each((idx, el) => {
+                    if (el.id === uid) {
+                        book = {
+                            uid: uid,
+                            title: el.volumeInfo.title,
+                            authors: el.volumeInfo.authors,
+                            description: el.volumeInfo.description
+                        };
+                    }
+                });
+
+                $.ajax({
+                    url: "/add-book",
+                    type: "post",
+                    data: book,
+                    success: (data) => {
+                        console.log(data);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    },
+                    beforeSend: function () {
+                        $('#loader').fadeIn();
+                    },
+                    complete: function () {
+                        $('#loader').fadeOut();
+                    }
+                });
+            }
+
+        </script>
+
+        {% endif; %}
+
     </body>
 </html>
