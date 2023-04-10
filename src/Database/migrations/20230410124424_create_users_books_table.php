@@ -34,6 +34,7 @@ class CreateUsersBooksTable extends Migration {
             $table->increments('id');
             $table->integer('user_id');
             $table->integer('book_id');
+            $table->timestamps();
         });
     }
 

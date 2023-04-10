@@ -15,6 +15,13 @@ class BookController {
         $book = Book::where(["uid" => $r->getParameters()["uid"]])->first() ?? new Book(); //firstOrCreate
         $book->fromRequest($r->getParameters());
         if ($book->save()) {
+
+            //need to add relationship via table
+            $ub = new \QD\Models\UsersBooks();
+            $ub->user_id = \QD\Models\User::current()->id;
+            $ub->book_id = $book->id;
+            $ub->save();
+
             return json_encode(["status" => "ok"]);
         }
     }

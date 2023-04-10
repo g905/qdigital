@@ -21,6 +21,7 @@ class Book extends Model {
             $this->authors = $authors;
         }
         $this->favorite = false;
+        $this->deleted = false;
 
         return $this;
     }
