@@ -9,7 +9,7 @@
             {% $books =  $vars["books"]; %}
             <ul class="books-list list-group">
                 {% foreach($books as $book): %}
-                {% $fav = $book->favorite ? "favorite" : "" %}
+                {% $fav = $book->isFavorite(\QD\Models\User::current()->id) ? "favorite" : "" %}
                 <li class="d-flex flex-nowrap justify-content-between list-group-item {{ $fav }} book" data-book-uid="{{ $book->uid }}">
                     <div class="title">{{ $book->title }}</div>
                     <div class="controls d-flex flex-nowrap justify-content-between">

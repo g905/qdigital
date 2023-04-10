@@ -25,4 +25,9 @@ class Book extends Model {
         return $this;
     }
 
+    public function isFavorite($user_id) {
+        $fav = \QD\Models\UsersFavs::where(["user_id" => $user_id, "book_id" => $this->uid])->first();
+        return (bool) $fav;
+    }
+
 }

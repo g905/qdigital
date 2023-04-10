@@ -45,10 +45,15 @@ class BookController {
             return false;
         }
 
-        $book = Book::where(["uid" => $r->getParameter("uid")])->first();
-        if ($book) {
-            $book->favorite = !$book->favorite;
-            $book->save();
+        $fav = \QD\Models\UsersFavs::where(["user_id" => \QD\Models\User::current()->id, "book_id" => $r->getParameter("uid")])->first();
+
+        if ($fav) {
+            $fav->delete();
+        } else {
+            $fav = new \QD\Models\UsersFavs();
+            $fav->user_id = \QD\Models\User::current()->id;
+            $fav->book_id = $r->getParameter("uid");
+            $fav->save();
         }
         $rs = new \Http\HttpResponse();
         $rs->setStatusCode(200);

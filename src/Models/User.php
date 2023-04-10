@@ -8,6 +8,10 @@ class User extends Model {
 
     private $errors = [];
 
+    public function books() {
+        return $this->hasManyThrough(\QD\Models\Book::class, \QD\Models\UsersBooks::class, "user_id", "id");
+    }
+
     public function validate($data) {
         $this->errors = [];
         if (!(isset($data["name"])) || trim($data["name"]) === "") {

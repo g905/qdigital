@@ -42,12 +42,18 @@ class PageController {
     }
 
     public function library() {
-        $books = Book::where(["deleted" => false])->get();
+        $books = Book::join("users_books", "books.id", "users_books.book_id")
+                ->where(["users_books.user_id" => User::current()->id])
+                ->where(["deleted" => false])
+                ->get();
         return ["library.html", ["books" => $books]];
     }
 
     public function favorites() {
-        $books = Book::where(["favorite" => true])->where(["deleted" => false])->get();
+        $books = Book::join("users_favs", "users_favs.book_id", "books.uid")
+                ->where(["users_favs.user_id" => User::current()->id])
+                ->where(["books.deleted" => false])
+                ->get();
         return ["library.html", ["books" => $books]];
     }
 
